@@ -195,7 +195,7 @@ const isLocationBookmarked = (state, location) => {
   const bookmarks = bookmarksState.getBookmarks(state)
   const siteKeys = bookmarkLocationCache.getCacheKey(state, location)
 
-  if (siteKeys.isEmpty()) {
+  if (siteKeys.isEmpty() || bookmarks.isEmpty()) {
     return false
   }
 
@@ -216,20 +216,6 @@ const toCreateProperties = (bookmark) => {
     url: bookmark.get('location'),
     partitionNumber: bookmark.get('partitionNumber')
   }
-}
-
-/**
- * Filters bookmarks relative to a parent folder
- * @param state - The application state
- * @param folderKey The folder key to filter to
- */
-const getBookmarksByParentId = (state, folderKey) => {
-  const bookmarks = bookmarksState.getBookmarks(state)
-  if (!folderKey) {
-    return bookmarks
-  }
-
-  return bookmarks.filter((bookmark) => bookmark.get('parentFolderId') === folderKey)
 }
 
 const isBookmark = (bookmark) => {
@@ -282,7 +268,6 @@ module.exports = {
   getDetailFromFrame,
   isLocationBookmarked,
   toCreateProperties,
-  getBookmarksByParentId,
   isBookmark,
   updateTabBookmarked,
   updateActiveTabBookmarked,

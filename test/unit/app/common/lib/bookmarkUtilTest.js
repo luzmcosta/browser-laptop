@@ -14,6 +14,61 @@ const siteTags = require('../../../../../js/constants/siteTags')
 
 require('../../../braveUnit')
 
+const stateWithData = Immutable.fromJS({
+  windows: [],
+  bookmarks: {
+    'https://brave.com/|0|0': {
+      favicon: undefined,
+      title: 'Brave',
+      location: 'https://brave.com/',
+      key: 'https://brave.com/|0|0',
+      parentFolderId: 0,
+      partitionNumber: 0,
+      objectId: null,
+      themeColor: undefined,
+      type: siteTags.BOOKMARK
+    },
+    'https://clifton.io/|0|0': {
+      favicon: undefined,
+      title: 'Clifton',
+      location: 'https://clifton.io/',
+      key: 'https://clifton.io/|0|0',
+      parentFolderId: 0,
+      partitionNumber: 0,
+      objectId: null,
+      themeColor: undefined,
+      type: siteTags.BOOKMARK
+    }
+  },
+  bookmarkFolders: {},
+  cache: {
+    bookmarkOrder: {
+      '0': [
+        {
+          key: 'https://brave.com/|0|0',
+          order: 0,
+          type: siteTags.BOOKMARK
+        },
+        {
+          key: 'https://clifton.io/|0|0',
+          order: 1,
+          type: siteTags.BOOKMARK
+        }
+      ]
+    },
+    bookmarkLocation: {
+      'https://brave.com/': [
+        'https://brave.com/|0|0'
+      ],
+      'https://clifton.io/': [
+        'https://clifton.io/|0|0'
+      ]
+    }
+  },
+  historySites: {},
+  tabs: []
+})
+
 describe('bookmarkUtil unit test', function () {
   describe('bookmarkHangerHeading', function () {
     it('returns default if isFolder and editKey are not provided', function () {
@@ -212,7 +267,20 @@ describe('bookmarkUtil unit test', function () {
   })
 
   describe('isLocationBookmarked', function () {
+    it('null case', function () {
+      const result = bookmarkUtil.isLocationBookmarked(stateWithData)
+      assert.equal(result, false)
+    })
 
+    it('cache key is not found', function () {
+      const result = bookmarkUtil.isLocationBookmarked(stateWithData, 'https://brianbondy.com')
+      assert.equal(result, false)
+    })
+
+    it('cache key is found', function () {
+      const result = bookmarkUtil.isLocationBookmarked(stateWithData, 'https://clifton.io/')
+      assert.equal(result, true)
+    })
   })
 
   describe('toCreateProperties', function () {
@@ -230,10 +298,6 @@ describe('bookmarkUtil unit test', function () {
       assert.equal(result.url, siteDetail.get('location'))
       assert.equal(result.partitionNumber, siteDetail.get('partitionNumber'))
     })
-  })
-
-  describe('getBookmarksByParentId', function () {
-
   })
 
   describe('isBookmark', function () {
