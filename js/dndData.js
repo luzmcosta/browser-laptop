@@ -20,7 +20,7 @@ module.exports.getBookmarkKeyFolderId = (key) => {
   return keySplit[keySplit.length - 1]
 }
 // Get data from a drag event, e.g. drag of a bookmark between folders.
-module.exports.getDragData = function(dataTransfer, dragType) {
+module.exports.getDragData = function (dataTransfer, dragType) {
   // Get the bookmark's data from the event.
   const data = dataTransfer.getData(`application/x-brave-${dragType}`)
   // Validate.
