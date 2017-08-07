@@ -9,9 +9,9 @@ module.exports.hasDragData = (dataTransfer, dragType) => {
 }
 // Construct a pipe-delimited bookmark key from the bookmark's main identifiers.
 module.exports.setBookmarkKey = ({
-  location, parentFolderId, partitionNumber
+  location, parentFolderId, partitionNumber, title
 }) => {
-  return [location, partitionNumber, parentFolderId].join('|')
+  return [location || title, partitionNumber, parentFolderId].join('|')
 }
 
 // Return the last item, the parentFolderId, from the pipe-delimited key.
@@ -30,14 +30,17 @@ module.exports.getDragData = function(dataTransfer, dragType) {
   }
   // If valid, parse data to get bookmark and its identifiers.
   const bookmark = JSON.parse(data)
-  const { key, parentFolderId } = bookmark
+  const { key, folderId, parentFolderId } = bookmark
   const keyFolderId = this.getBookmarkKeyFolderId(key)
-  // Reset to correct key if key's parentFolderId set to top-level folder,
-  // not actual parent folder ID.
-  if (parentFolderId !== keyFolderId) {
+  // Reset to correct key ...
+  if (folderId) {
+    // ... if folder, set key to its folder ID. Used for lookup.
+    bookmark.key = folderId
+  } else if (parentFolderId !== keyFolderId) {
+    // ... if key's parentFolderId does not match the actual parent folder ID.
     bookmark.key = this.setBookmarkKey(bookmark)
   }
-  // Return the bookmark as an immutable object.
+  // Return bookmark or bookmark folder as an immutable object.
   return Immutable.fromJS(bookmark)
 }
 

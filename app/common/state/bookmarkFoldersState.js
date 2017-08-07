@@ -163,12 +163,8 @@ const bookmarkFoldersState = {
     }
 
     if (moveIntoParent || destinationItem.get('parentFolderId') !== folder.get('parentFolderId')) {
-      const parentFolderId = destinationItem.get('type') === siteTags.BOOKMARK
-        ? destinationItem.get('parentFolderId')
-        : destinationItem.get('folderId')
-
       state = bookmarkOrderCache.removeCacheKey(state, folder.get('parentFolderId'), folderKey)
-      folder = folder.set('parentFolderId', ~~parentFolderId)
+      folder = folder.set('parentFolderId', destinationKey)
       const newKey = bookmarkFoldersUtil.getKey(folder)
       state = state.deleteIn([STATE_SITES.BOOKMARK_FOLDERS, folderKey])
       state = bookmarkOrderCache.addFolderToCache(state, folder.get('parentFolderId'), newKey)
